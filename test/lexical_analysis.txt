@@ -1,0 +1,7 @@
+int a
+string
+a = a /* HOLA COMO ESTAS */
+string b
+a = b
+
+print(a)

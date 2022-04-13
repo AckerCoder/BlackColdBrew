@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@types/node": "^17.0.23",
+    "fs": "^0.0.1-security",
+    "fstream": "^1.0.12",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.7.0",
+    "tslog": "^3.3.3",
+    "typescript": "^4.6.3"
+  }
+}
