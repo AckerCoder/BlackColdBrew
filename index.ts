@@ -6,7 +6,7 @@ import {
   scanLexWithoutLimitations,
   scanLexWithSpaceOrEndlLimitations,
 } from "./scanners";
-
+import { logError } from "./logs";
 const filename = "test/lexical_analysis.txt";
 
 let data: string = fs.readFileSync(filename, { encoding: "utf8", flag: "r" });
@@ -126,6 +126,11 @@ const lexical_analyzer = (
 
 while (
   lexycalAnalyzerInitialStatus.currentPointer <
-  lexycalAnalyzerInitialStatus.text.length
-)
+    lexycalAnalyzerInitialStatus.text.length &&
+  !lexycalAnalyzerInitialStatus.error
+) {
   lexycalAnalyzerInitialStatus = lexical_analyzer(lexycalAnalyzerInitialStatus);
+  if (lexycalAnalyzerInitialStatus.error) {
+    logError(lexycalAnalyzerInitialStatus.error.message);
+  }
+}

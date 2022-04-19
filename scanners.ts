@@ -1,62 +1,12 @@
 import { LexycalAnalyzerStatus } from "./interfaces";
 import { staticTokens } from "./tokens";
-import * as fs from "fs";
-
-const path = require("path");
-
-const getChar = () => {};
-
-const peekChar = (currentPosition: number, wordLength: number) =>
-  currentPosition + wordLength + 1;
-
-const filename = "test/lexical_analysis.txt";
-
-let data: string = fs.readFileSync(filename, { encoding: "utf8", flag: "r" });
-
-const logMessage = (
-  token: string | undefined,
-  currentLine: number,
-  pointer: number,
-  id?: string
-) => {
-  if (id) {
-    const newLine = currentLine + 1;
-    const newLinePointer = pointer + 1;
-    console.log(
-      "DEBUG SCAN - ID " +
-        "[ " +
-        id +
-        " ]" +
-        " found at " +
-        "(" +
-        newLine +
-        ":" +
-        newLinePointer +
-        ")"
-    );
-    return;
-  }
-  if (token) {
-    const newLine = currentLine + 1;
-    const newLinePointer = pointer + 1;
-    console.log(
-      "DEBUG SCAN - " +
-        "[ " +
-        token +
-        " ]" +
-        " found at " +
-        "(" +
-        newLine +
-        ":" +
-        newLinePointer +
-        ")"
-    );
-  }
-};
-
-const normalizeLexWithSpace = (lex: string) => lex + " ";
-const normalizeLexWithEndl = (lex: string) => lex + "\n";
-
+import {
+  peekChar,
+  normalizeLexWithEndl,
+  normalizeLexWithSpace,
+  createError,
+} from "./utils";
+import { logMessage } from "./logs";
 export const scanLexWithSpaceOrEndlLimitations = (
   currentStatus: LexycalAnalyzerStatus,
   currentWord: string,
@@ -164,4 +114,11 @@ export const findClosedScope = (
     }
     currentStatus.currentLinePointer++;
   }
+  return {
+    currentPointer: closePattern.length,
+    currentLinePointer: currentStatus.currentLinePointer,
+    currentLine: currentStatus.currentLine,
+    text: currentStatus.text,
+    error: createError("EXPECTED " + staticTokens.get(closePattern)),
+  };
 };

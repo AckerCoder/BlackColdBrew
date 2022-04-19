@@ -3,4 +3,9 @@ export interface LexycalAnalyzerStatus {
   currentLinePointer: number;
   currentLine: number;
   text: string;
+  error?: Error;
+}
+
+export interface Error {
+  message: string;
 }

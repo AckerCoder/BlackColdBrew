@@ -1,7 +1,6 @@
 int a
 string
-a = a /* HOLA COMO ESTAS */
-string b
+a = a /* HOLA COMO ESTAS
 a = b
 
 print(a)
