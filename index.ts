@@ -7,6 +7,9 @@ import {
   scanLexWithSpaceOrEndlLimitations,
 } from "./scanners";
 import { logError } from "./logs";
+import { cleanTokenList } from "./utils";
+import { llparser } from "./parserll";
+import { parser } from "./parser";
 const filename = "test/lexical_analysis.txt";
 
 let data: string = fs.readFileSync(filename, { encoding: "utf8", flag: "r" });
@@ -16,6 +19,7 @@ let lexycalAnalyzerInitialStatus: LexycalAnalyzerStatus = {
   currentLinePointer: 0,
   currentLine: 0,
   text: data,
+  tokenList: [],
 };
 
 const lexical_analyzer = (
@@ -124,13 +128,26 @@ const lexical_analyzer = (
   return currentStatus;
 };
 
+const tokenList = [];
+
 while (
   lexycalAnalyzerInitialStatus.currentPointer <
     lexycalAnalyzerInitialStatus.text.length &&
   !lexycalAnalyzerInitialStatus.error
 ) {
   lexycalAnalyzerInitialStatus = lexical_analyzer(lexycalAnalyzerInitialStatus);
-  if (lexycalAnalyzerInitialStatus.error) {
+  // console.log(lexycalAnalyzerInitialStatus);
+  if (lexycalAnalyzerInitialStatus.error)
     logError(lexycalAnalyzerInitialStatus.error.message);
-  }
 }
+
+lexycalAnalyzerInitialStatus.tokenList = cleanTokenList(
+  lexycalAnalyzerInitialStatus.tokenList
+);
+
+//let PAPAPARSER = new llparser();
+//PAPAPARSER.tokens = lexycalAnalyzerInitialStatus.tokenList;
+
+let initialParser = parser(lexycalAnalyzerInitialStatus.tokenList);
+
+console.log(initialParser);

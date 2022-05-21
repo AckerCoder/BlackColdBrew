@@ -1,6 +1,8 @@
 int a
-string
-a = a /* HOLA COMO ESTAS
-a = b
+a = a /* HOLA COMO ESTAS */
+a=b
 
+int b
+
+int c
 print(a)

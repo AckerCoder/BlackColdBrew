@@ -7,6 +7,7 @@ import {
   createError,
 } from "./utils";
 import { logMessage } from "./logs";
+
 export const scanLexWithSpaceOrEndlLimitations = (
   currentStatus: LexycalAnalyzerStatus,
   currentWord: string,
@@ -35,11 +36,21 @@ export const scanLexWithSpaceOrEndlLimitations = (
         currentStatus.currentLinePointer
       );
     }
+
+    const newTokenList = currentStatus.tokenList;
+
+    newTokenList.push({
+      line: currentStatus.currentLine,
+      linePointer: currentStatus.currentLinePointer,
+      token: staticTokens.get(currentWord),
+    });
+
     return {
       currentPointer: currentStatus.currentPointer + wordLength,
       currentLinePointer: currentStatus.currentLinePointer + wordLength,
       currentLine: currentStatus.currentLine,
       text: currentStatus.text,
+      tokenList: newTokenList,
     };
   }
 };
@@ -59,11 +70,21 @@ export const scanLexWithoutLimitations = (
       currentStatus.currentLine,
       currentStatus.currentLinePointer
     );
+
+    const newTokenList = currentStatus.tokenList;
+
+    newTokenList.push({
+      line: currentStatus.currentLine,
+      linePointer: currentStatus.currentLinePointer,
+      token: staticTokens.get(currentWord),
+    });
+
     return {
       currentPointer: currentStatus.currentPointer + wordLength,
       currentLinePointer: currentStatus.currentLinePointer + wordLength,
       currentLine: currentStatus.currentLine,
       text: currentStatus.text,
+      tokenList: newTokenList,
     };
   }
 };
@@ -71,6 +92,13 @@ export const scanLexWithoutLimitations = (
 export const scanIdLex = (currentStatus: LexycalAnalyzerStatus) => {
   const id = extractId(currentStatus.text, currentStatus.currentPointer);
   const result = scanLexWithSpaceOrEndlLimitations(currentStatus, id, true);
+  const newTokenList = currentStatus.tokenList;
+
+  newTokenList.push({
+    line: currentStatus.currentLine,
+    linePointer: currentStatus.currentLinePointer,
+    token: "ID",
+  });
   return result;
 };
 
@@ -100,11 +128,20 @@ export const findClosedScope = (
         currentStatus.currentLine,
         currentStatus.currentLinePointer + closePattern.length
       );
+      const newTokenList = currentStatus.tokenList;
+
+      newTokenList.push({
+        line: currentStatus.currentLine,
+        linePointer: currentStatus.currentLinePointer,
+        token: staticTokens.get(closePattern),
+      });
+
       return {
         currentPointer: i + closePattern.length,
         currentLinePointer: currentStatus.currentLinePointer,
         currentLine: currentStatus.currentLine,
         text: currentStatus.text,
+        tokenList: newTokenList,
       };
     }
     if (text[i] === "\n") {
@@ -120,5 +157,6 @@ export const findClosedScope = (
     currentLine: currentStatus.currentLine,
     text: currentStatus.text,
     error: createError("EXPECTED " + staticTokens.get(closePattern)),
+    tokenList: currentStatus.tokenList,
   };
 };
